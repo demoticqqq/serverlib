@@ -67,6 +67,18 @@ build CMakeFiles/serverlib.dir/net/EventLoop.cpp.o: CXX_COMPILER__serverlib_Debu
   OBJECT_DIR = CMakeFiles/serverlib.dir
   OBJECT_FILE_DIR = CMakeFiles/serverlib.dir/net
 
+build CMakeFiles/serverlib.dir/base/Timestamp.cpp.o: CXX_COMPILER__serverlib_Debug /home/huangw/CLionProjects/serverlib/base/Timestamp.cpp || cmake_object_order_depends_target_serverlib
+  DEP_FILE = CMakeFiles/serverlib.dir/base/Timestamp.cpp.o.d
+  FLAGS = -g -std=gnu++11
+  OBJECT_DIR = CMakeFiles/serverlib.dir
+  OBJECT_FILE_DIR = CMakeFiles/serverlib.dir/base
+
+build CMakeFiles/serverlib.dir/base/main.cpp.o: CXX_COMPILER__serverlib_Debug /home/huangw/CLionProjects/serverlib/base/main.cpp || cmake_object_order_depends_target_serverlib
+  DEP_FILE = CMakeFiles/serverlib.dir/base/main.cpp.o.d
+  FLAGS = -g -std=gnu++11
+  OBJECT_DIR = CMakeFiles/serverlib.dir
+  OBJECT_FILE_DIR = CMakeFiles/serverlib.dir/base
+
 
 # =============================================================================
 # Link build statements for STATIC_LIBRARY target serverlib
@@ -75,7 +87,7 @@ build CMakeFiles/serverlib.dir/net/EventLoop.cpp.o: CXX_COMPILER__serverlib_Debu
 #############################################
 # Link the static library libserverlib.a
 
-build libserverlib.a: CXX_STATIC_LIBRARY_LINKER__serverlib_Debug CMakeFiles/serverlib.dir/base/Thread.cpp.o CMakeFiles/serverlib.dir/base/CountDownLatch.cpp.o CMakeFiles/serverlib.dir/net/EventLoop.cpp.o
+build libserverlib.a: CXX_STATIC_LIBRARY_LINKER__serverlib_Debug CMakeFiles/serverlib.dir/base/Thread.cpp.o CMakeFiles/serverlib.dir/base/CountDownLatch.cpp.o CMakeFiles/serverlib.dir/net/EventLoop.cpp.o CMakeFiles/serverlib.dir/base/Timestamp.cpp.o CMakeFiles/serverlib.dir/base/main.cpp.o
   LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = CMakeFiles/serverlib.dir
   POST_BUILD = :
