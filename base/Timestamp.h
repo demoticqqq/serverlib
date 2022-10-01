@@ -6,7 +6,8 @@
 #define SERVERLIB_TIMESTAMP_H
 #include <string>
 
-class Timestamp {
+class Timestamp
+{
 public:
     Timestamp()
         :microSecondsSinceEpoch_(0)
