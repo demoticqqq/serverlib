@@ -27,9 +27,9 @@ public:
     void handleEvent(Timestamp receiveTime);
     void handleEventWithGuard(Timestamp receiveTime);
     void setReadCallback(ReadEventCallback cb) {readCallback_=std::move(cb);}
-    void setWriteCallback(EventCallback cb) {writeCallback_=std::move(cb)};
-    void setCloseCallback(EventCallback cb) {closeCallback_=std::move(cb)};
-    void setErrorCallback(EventCallback cb) {errorCallback_=std::move(cb)};
+    void setWriteCallback(EventCallback cb) {writeCallback_=std::move(cb);}
+    void setCloseCallback(EventCallback cb) {closeCallback_=std::move(cb);}
+    void setErrorCallback(EventCallback cb) {errorCallback_=std::move(cb);}
 
     int fd() const { return fd_;}
     int events() const { return events_;}
@@ -48,7 +48,7 @@ public:
     int index() {return index_;}
     void setIndex(int idx) {index_ = idx;}
 
-    EventLoop *ownerLoop() {return loop_}
+    EventLoop *ownerLoop() {return loop_;}
     void remove();
 
 private:
