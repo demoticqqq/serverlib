@@ -16,7 +16,7 @@ class ThreadPool:noncopyable
 public:
     using Task = std::function<void()>;
 
-    explicit ThreadPool(const string& nameArg = string("ThreadPool"));
+    explicit ThreadPool(const std::string& nameArg = std::string("ThreadPool"));
     ~ThreadPool();
 
     void setMaxQueueSize(int maxSize) { maxQueueSize_=maxSize;}

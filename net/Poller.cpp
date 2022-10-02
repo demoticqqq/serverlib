@@ -6,7 +6,7 @@
 #include "Channel.h"
 
 Poller::Poller(EventLoop *loop)
-    :ownerLoop_(loop);
+    :ownerLoop_(loop)
 {
 }
 

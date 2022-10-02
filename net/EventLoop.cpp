@@ -139,7 +139,7 @@ void EventLoop::updateChannel(Channel *channel)
 
 void EventLoop::removeChannel(Channel *channel)
 {
-    poller_->removeChannel(channel)
+    poller_->removeChannel(channel);
 }
 
 bool EventLoop::hasChannel(Channel *channel)

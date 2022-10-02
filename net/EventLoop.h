@@ -31,7 +31,7 @@ public:
 
     void quit();
 
-    Timestamp pollReturnTime() const {return pollReturnTime_};
+    Timestamp pollReturnTime() const {return pollReturnTime_;}
 
     void runInLoop(Functor cb);
     void queueInLoop(Functor cb);
