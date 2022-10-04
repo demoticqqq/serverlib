@@ -13,7 +13,7 @@
 
 class EventLoop;
 
-class Channel
+class Channel : noncopyable
 {
 public:
     using EventCallback = std::function<void()>;

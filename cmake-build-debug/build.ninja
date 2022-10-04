@@ -79,8 +79,8 @@ build CMakeFiles/serverlib.dir/base/ThreadPool.cpp.o: CXX_COMPILER__serverlib_De
   OBJECT_DIR = CMakeFiles/serverlib.dir
   OBJECT_FILE_DIR = CMakeFiles/serverlib.dir/base
 
-build CMakeFiles/serverlib.dir/net/Chanel.cpp.o: CXX_COMPILER__serverlib_Debug /home/huangw/CLionProjects/serverlib/net/Chanel.cpp || cmake_object_order_depends_target_serverlib
-  DEP_FILE = CMakeFiles/serverlib.dir/net/Chanel.cpp.o.d
+build CMakeFiles/serverlib.dir/net/Channel.cpp.o: CXX_COMPILER__serverlib_Debug /home/huangw/CLionProjects/serverlib/net/Channel.cpp || cmake_object_order_depends_target_serverlib
+  DEP_FILE = CMakeFiles/serverlib.dir/net/Channel.cpp.o.d
   FLAGS = -g -std=gnu++11
   OBJECT_DIR = CMakeFiles/serverlib.dir
   OBJECT_FILE_DIR = CMakeFiles/serverlib.dir/net
@@ -97,11 +97,35 @@ build CMakeFiles/serverlib.dir/net/EpollPoller.cpp.o: CXX_COMPILER__serverlib_De
   OBJECT_DIR = CMakeFiles/serverlib.dir
   OBJECT_FILE_DIR = CMakeFiles/serverlib.dir/net
 
-build CMakeFiles/serverlib.dir/base/log.cpp.o: CXX_COMPILER__serverlib_Debug /home/huangw/CLionProjects/serverlib/base/log.cpp || cmake_object_order_depends_target_serverlib
-  DEP_FILE = CMakeFiles/serverlib.dir/base/log.cpp.o.d
+build CMakeFiles/serverlib.dir/base/Logger.cpp.o: CXX_COMPILER__serverlib_Debug /home/huangw/CLionProjects/serverlib/base/Logger.cpp || cmake_object_order_depends_target_serverlib
+  DEP_FILE = CMakeFiles/serverlib.dir/base/Logger.cpp.o.d
   FLAGS = -g -std=gnu++11
   OBJECT_DIR = CMakeFiles/serverlib.dir
   OBJECT_FILE_DIR = CMakeFiles/serverlib.dir/base
+
+build CMakeFiles/serverlib.dir/net/Socket.cpp.o: CXX_COMPILER__serverlib_Debug /home/huangw/CLionProjects/serverlib/net/Socket.cpp || cmake_object_order_depends_target_serverlib
+  DEP_FILE = CMakeFiles/serverlib.dir/net/Socket.cpp.o.d
+  FLAGS = -g -std=gnu++11
+  OBJECT_DIR = CMakeFiles/serverlib.dir
+  OBJECT_FILE_DIR = CMakeFiles/serverlib.dir/net
+
+build CMakeFiles/serverlib.dir/net/InetAddress.cpp.o: CXX_COMPILER__serverlib_Debug /home/huangw/CLionProjects/serverlib/net/InetAddress.cpp || cmake_object_order_depends_target_serverlib
+  DEP_FILE = CMakeFiles/serverlib.dir/net/InetAddress.cpp.o.d
+  FLAGS = -g -std=gnu++11
+  OBJECT_DIR = CMakeFiles/serverlib.dir
+  OBJECT_FILE_DIR = CMakeFiles/serverlib.dir/net
+
+build CMakeFiles/serverlib.dir/net/EventLoopThread.cpp.o: CXX_COMPILER__serverlib_Debug /home/huangw/CLionProjects/serverlib/net/EventLoopThread.cpp || cmake_object_order_depends_target_serverlib
+  DEP_FILE = CMakeFiles/serverlib.dir/net/EventLoopThread.cpp.o.d
+  FLAGS = -g -std=gnu++11
+  OBJECT_DIR = CMakeFiles/serverlib.dir
+  OBJECT_FILE_DIR = CMakeFiles/serverlib.dir/net
+
+build CMakeFiles/serverlib.dir/net/EventLoopThreadPool.cpp.o: CXX_COMPILER__serverlib_Debug /home/huangw/CLionProjects/serverlib/net/EventLoopThreadPool.cpp || cmake_object_order_depends_target_serverlib
+  DEP_FILE = CMakeFiles/serverlib.dir/net/EventLoopThreadPool.cpp.o.d
+  FLAGS = -g -std=gnu++11
+  OBJECT_DIR = CMakeFiles/serverlib.dir
+  OBJECT_FILE_DIR = CMakeFiles/serverlib.dir/net
 
 
 # =============================================================================
@@ -111,7 +135,7 @@ build CMakeFiles/serverlib.dir/base/log.cpp.o: CXX_COMPILER__serverlib_Debug /ho
 #############################################
 # Link the static library libserverlib.a
 
-build libserverlib.a: CXX_STATIC_LIBRARY_LINKER__serverlib_Debug CMakeFiles/serverlib.dir/base/Thread.cpp.o CMakeFiles/serverlib.dir/base/CountDownLatch.cpp.o CMakeFiles/serverlib.dir/net/EventLoop.cpp.o CMakeFiles/serverlib.dir/base/Timestamp.cpp.o CMakeFiles/serverlib.dir/base/ThreadPool.cpp.o CMakeFiles/serverlib.dir/net/Chanel.cpp.o CMakeFiles/serverlib.dir/net/Poller.cpp.o CMakeFiles/serverlib.dir/net/EpollPoller.cpp.o CMakeFiles/serverlib.dir/base/log.cpp.o
+build libserverlib.a: CXX_STATIC_LIBRARY_LINKER__serverlib_Debug CMakeFiles/serverlib.dir/base/Thread.cpp.o CMakeFiles/serverlib.dir/base/CountDownLatch.cpp.o CMakeFiles/serverlib.dir/net/EventLoop.cpp.o CMakeFiles/serverlib.dir/base/Timestamp.cpp.o CMakeFiles/serverlib.dir/base/ThreadPool.cpp.o CMakeFiles/serverlib.dir/net/Channel.cpp.o CMakeFiles/serverlib.dir/net/Poller.cpp.o CMakeFiles/serverlib.dir/net/EpollPoller.cpp.o CMakeFiles/serverlib.dir/base/Logger.cpp.o CMakeFiles/serverlib.dir/net/Socket.cpp.o CMakeFiles/serverlib.dir/net/InetAddress.cpp.o CMakeFiles/serverlib.dir/net/EventLoopThread.cpp.o CMakeFiles/serverlib.dir/net/EventLoopThreadPool.cpp.o
   LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = CMakeFiles/serverlib.dir
   POST_BUILD = :
