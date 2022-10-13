@@ -1,3 +1,0 @@
-/home/huangw/CLionProjects/serverlib/cmake-build-debug/CMakeFiles/serverlib.dir
-/home/huangw/CLionProjects/serverlib/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/huangw/CLionProjects/serverlib/cmake-build-debug/CMakeFiles/rebuild_cache.dir
