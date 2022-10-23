@@ -22,10 +22,9 @@ public:
     Channel(EventLoop *loop, int fd);
     ~Channel();
 
-    void tie(const std::shared_ptr<void>& obj);
+    void tie(const std::shared_ptr<void>&);
 
     void handleEvent(Timestamp receiveTime);
-    void handleEventWithGuard(Timestamp receiveTime);
     void setReadCallback(ReadEventCallback cb) {readCallback_=std::move(cb);}
     void setWriteCallback(EventCallback cb) {writeCallback_=std::move(cb);}
     void setCloseCallback(EventCallback cb) {closeCallback_=std::move(cb);}
@@ -53,6 +52,7 @@ public:
 
 private:
     void update();
+    void handleEventWithGuard(Timestamp receiveTime);
 
     static const int kNoneEvent;
     static const int kReadEvent;

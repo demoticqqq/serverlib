@@ -10,12 +10,22 @@
 #include "Channel.h"
 #include "EventLoop.h"
 
+static EventLoop *CheckLoopNotNull(EventLoop *loop)
+{
+    if (loop == nullptr)
+    {
+        LOG_FATAL("%s:%s:%d mainLoop is null!\n", __FILE__, __FUNCTION__, __LINE__);
+    }
+    return loop;
+}
+
+
 TcpConnection::TcpConnection(EventLoop *loop,
                              const std::string &nameArg,
                              int sockfd,
                              const InetAddress &localAddr,
                              const InetAddress &peerAddr)
-    : loop_(loop)
+    : loop_(CheckLoopNotNull(loop))
     , name_(nameArg)
     , socket_(new Socket(sockfd))
     , channel_(new Channel(loop,sockfd))
@@ -44,27 +54,22 @@ void TcpConnection::send(const std::string &buf)
     {
         if(loop_->isInLoopThread())  // 这种对于单个reactor的情况 用户调用conn->send时 loop_即为当前线程
         {
-            sendInLoop(buf);
+            sendInLoop(buf.data(),buf.size());
         }
         else    //多reactor情况
         {
-            void(TcpConnection:: *fp)(const std::string& buf) = &TcpConnection::sendInLoop;
-            loop_->runInLoop(std::bind(fp, this, buf));
+            loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, buf.data(),buf.size()));
         }
     }
 }
 
-void TcpConnection::sendInLoop(const std::string &buf)
-{
-    sendInLoop(buf.data(),buf.size());
-}
 
 void TcpConnection::sendInLoop(const void* data,size_t len)
 {
     ssize_t nwrote = 0;
     size_t remaining = len;
     bool  faultError = false;
-    if(state_ = kDisconnected)  // 之前调用过该connection的shutdown 不能再进行发送了
+    if(state_ == kDisconnected)  // 之前调用过该connection的shutdown 不能再进行发送了
     {
         LOG_ERROR("disconnected, give up writing");
     }
@@ -83,7 +88,7 @@ void TcpConnection::sendInLoop(const void* data,size_t len)
         else
         {
             nwrote = 0;
-            if(errno == EWOULDBLOCK)  // EWOULDBLOCK表示非阻塞情况下没有数据后的正常返回 等同于EAGAIN
+            if(errno != EWOULDBLOCK)  // EWOULDBLOCK表示非阻塞情况下没有数据后的正常返回 等同于EAGAIN
             {
                 LOG_ERROR("TcpConnection::sendInLoop");
                 if(errno == EPIPE || errno == ECONNRESET) //SIGIPE RESET
@@ -98,7 +103,7 @@ void TcpConnection::sendInLoop(const void* data,size_t len)
      * 等待Poller通知对应的scokfd->channel_ tcp发送缓存区有空间
      * 并调用channel的writeCallback_,也就是TcpConnection设置的handleWrite回调
      * 将发送缓冲区outputbuffer_的内容全部发送完毕*/
-    if(!faultError && remaining)
+    if(!faultError && remaining > 0)
     {
         size_t oldLen = outputBuffer_.readableBytes();
         //待发送的数据超过水位线，触发高水位回调。
@@ -119,7 +124,7 @@ void TcpConnection::shutdown()
 {
     if(state_ == kConnected)
     {
-        setState(kDisconnected);
+        setState(kDisconnecting);
         loop_->runInLoop(std::bind(&TcpConnection::shutdownInLoop, this));
     }
 }

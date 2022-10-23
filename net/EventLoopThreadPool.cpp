@@ -14,6 +14,11 @@ EventLoopThreadPool::EventLoopThreadPool(EventLoop *baseloop, const std::string 
 {
 }
 
+EventLoopThreadPool::~EventLoopThreadPool()
+{
+
+}
+
 void EventLoopThreadPool::start(const EventLoopThreadPool::ThreadInitCallback &cb)
 {
     for(int i = 0; i < numThreads_; i++)
@@ -35,11 +40,14 @@ EventLoop *EventLoopThreadPool::getNextLoop()
     /*如果只设置一个线程 也就是只有一个mainReactor 无subReactor
     那么轮询只有一个线程 getNextLoop()每次都返回当前的baseLoop_*/
     EventLoop* loop = baseLoop_;
-    loop = loops_[next_];
-    next_++;
-    if(static_cast<size_t>(next_) >= loops_.size())
+    if(!loops_.empty())
     {
-        next_=0;
+        loop = loops_[next_];
+        next_++;
+        if(static_cast<size_t>(next_) >= loops_.size())
+        {
+            next_=0;
+        }
     }
     return loop;
 }

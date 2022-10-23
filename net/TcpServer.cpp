@@ -10,9 +10,19 @@
 #include "EventLoop.h"
 #include "../base/Logger.h"
 
+static EventLoop *CheckLoopNotNull(EventLoop *loop)
+{
+    if (loop == nullptr)
+    {
+        LOG_FATAL("%s:%s:%d mainLoop is null!\n", __FILE__, __FUNCTION__, __LINE__);
+    }
+    return loop;
+}
+
+
 TcpServer::TcpServer(EventLoop *loop, const InetAddress &listenAddr, const std::string &nameArg,
                      TcpServer::Option option)
-    : loop_(loop)
+    : loop_(CheckLoopNotNull(loop))
     , ipPort_(listenAddr.toIpPort())
     , name_(nameArg)
     , acceptor_(new Acceptor(loop,listenAddr,option == kNoReusePort))
@@ -36,16 +46,15 @@ TcpServer::~TcpServer()
     }
 }
 
-void TcpServer::setTreadNum(int numThread)
+void TcpServer::setThreadNum(int numThread)
 {
     threadPool_->setThreadNum(numThread);
 }
 
 void TcpServer::start()
 {
-    if(started_ == 0)
+    if(started_++ == 0)
     {
-        started_++;
         threadPool_->start(threadInitCallback_);
         loop_->runInLoop(std::bind(&Acceptor::listen,acceptor_.get()));
     }
@@ -54,7 +63,7 @@ void TcpServer::start()
 void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr)
 {
     EventLoop* ioLoop = threadPool_->getNextLoop();
-    char buf[64];
+    char buf[64] ={0};
     snprintf(buf,sizeof buf,"-%s#%d",ipPort_.c_str(),nextConnId_);
     ++nextConnId_;
     std::string connName = name_ + buf;

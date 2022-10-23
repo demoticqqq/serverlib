@@ -9,6 +9,7 @@
 #include <atomic>
 
 #include "../base/noncopyable.h"
+#include "../base/Logger.h"
 #include "InetAddress.h"
 #include "Callback.h"
 #include "Buffer.h"
@@ -16,6 +17,10 @@
 class Channel;
 class EventLoop;
 class Socket;
+#define kDisconnected 0
+#define kConnecting 1
+#define kConnected 2
+#define kDisconnecting 3
 
 class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnection>
 {
@@ -51,22 +56,23 @@ public:
 
     void setTcpNoDelay(bool on);
 
+
 private:
-    enum StateE
+/*    enum StateE
     {
+        kDisconnected, //已断开连接
         kConnecting,  //正在连接
         kConnected,   //已连接
-        kDisconnected, //已断开连接
         kDisconnecting //正在断开连接
-    };
+    };*/
 
-    void setState(StateE state) {state_ = state;}
+
+    void setState(int state) {state_ = state;}
     void handleRead(Timestamp receiveTime);
     void handleWrite();
     void handleClose();
     void handleError();
 
-    void sendInLoop(const std::string &buf);
     void sendInLoop(const void* data, size_t len);
     void shutdownInLoop();
 

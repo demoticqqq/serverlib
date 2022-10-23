@@ -23,7 +23,7 @@ public:
     virtual void removeChannel(Channel* channel) = 0;
     bool hasChannel(Channel* channel) const;
 
-    static Poller* newDefaulPoller(EventLoop* loop);
+    static Poller* newDefaultPoller(EventLoop* loop);
 
 protected:
     using ChannelMap = std::unordered_map<int,Channel*>;

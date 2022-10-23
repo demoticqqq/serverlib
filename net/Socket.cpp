@@ -4,7 +4,13 @@
 #include "Socket.h"
 #include <cstring>
 #include <netinet/tcp.h>
+#include <unistd.h>
 #include "../base/Logger.h"
+
+Socket::~Socket()
+{
+    close(sockfd_);
+}
 
 void Socket::bindAddress(const InetAddress &localaddr)
 {

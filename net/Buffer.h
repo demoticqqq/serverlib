@@ -48,12 +48,12 @@ public:
         writerIndex_ = kCheapPrepend;
     }
 
-    void  retrieveAllAsString() { return retrieveAsString(readableBytes());}
-    void retrieveAsString(size_t len)
+    std::string retrieveAllAsString() { return retrieveAsString(readableBytes());}
+    std::string retrieveAsString(size_t len)
     {
         std::string result(peek(),len);  //从缓存区读取数据至string中
         retrieve(len);  //读完后，执行复位操作
-        return; result;
+        return result;
     }
     //确认可写空间足够，不够的话需要扩容
     void ensureWritableBytes(size_t len)

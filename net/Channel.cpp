@@ -17,6 +17,11 @@ Channel::Channel(EventLoop *loop, int fd)
     ,events_(0)
     ,revents_(0)
     ,index_(-1)
+    ,tied_(false)
+{
+}
+
+Channel::~Channel()
 {
 }
 /**channel的tie方法什么时候调用?  TcpConnection => channel
@@ -46,6 +51,7 @@ void Channel::handleEvent(Timestamp receiveTime)
 {
     if(tied_)
     {
+
         std::shared_ptr<void> guard = tie_.lock();
         if(guard)
         {

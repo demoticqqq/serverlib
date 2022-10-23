@@ -9,6 +9,7 @@
 #include <memory>
 #include <atomic>
 #include <assert.h>
+#include "CountDownLatch.h"
 #include "noncopyable.h"
 class Thread : noncopyable
 {
@@ -33,5 +34,6 @@ private:
     ThreadFunc func_;
     std::string name_;
     static std::atomic_int numCreated_;
+    CountDownLatch latch_;
 };
 #endif //SERVERLIB_THREAD_H

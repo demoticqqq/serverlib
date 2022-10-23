@@ -11,7 +11,7 @@ __thread EventLoop* t_loopInThisThread = nullptr;
 
 const int kPollerTimeoutMs = 10000; //10s,poller超时时间
 
-int crearEventfd()
+int createEventfd()
 {
     int evfd = eventfd(0,EFD_NONBLOCK | EFD_CLOEXEC);
     if (evfd < 0)
@@ -26,9 +26,9 @@ EventLoop::EventLoop()
     ,quit_(false)
     ,threadId_(CurrentThread::tid())
     ,callingPendingFunctors_(false)
-    ,poller_()
+    ,poller_(Poller::newDefaultPoller(this))
     //,timerQueue_()
-    ,wakeupFd_(crearEventfd())
+    ,wakeupFd_(createEventfd())
     ,wakeupChannel_(new Channel(this,wakeupFd_))
 {
     LOG_DEBUG("EventLoop created %p in thread %d\n",this,threadId_);
@@ -62,7 +62,7 @@ void EventLoop::loop()
     while (!quit_)
     {
         activeChannels_.clear();
-        /**pollReturnTime_ = poller->poll(kPollTimeoutMs,&activeChannels);*/
+        pollReturnTime_ = poller_->poll(kPollerTimeoutMs,&activeChannels_);
         for(auto& channel:activeChannels_)
         {
             channel->handleEvent(pollReturnTime_);

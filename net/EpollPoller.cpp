@@ -29,14 +29,14 @@ EpollPoller::~EpollPoller()
 
 Timestamp EpollPoller::poll(int timeoutMs, Poller::ChannelList *activeChannels)
 {
-    LOG_DEBUG("func=%s : fd total count %lu\n",__FUNCTION__ ,channels_.size());
+    LOG_INFO("func=%s : fd total count %lu\n",__FUNCTION__ ,channels_.size());
 
     int numEvents = epoll_wait(epollfd_,events_.data(),static_cast<int>(events_.size()),timeoutMs);
     int savedErrno = errno;
     Timestamp now(Timestamp::now());
     if(numEvents > 0)
     {
-        LOG_DEBUG(func=%s : "%d events happend\n", __FUNCTION__ ,numEvents);
+        LOG_INFO("func=%s : %d events happend\n", __FUNCTION__ ,numEvents);
         fillActiveChannels(numEvents,activeChannels);
         if(numEvents == events_.size())
         {
@@ -71,7 +71,7 @@ void EpollPoller::fillActiveChannels(int numEvents, Poller::ChannelList *activeC
 void EpollPoller::updateChannel(Channel *channel)
 {
     const int index = channel->index();
-    LOG_DEBUG("func=%s => fd=%d events=%d index=%d\n", __FUNCTION__, channel->fd(), channel->events(), index);
+    LOG_INFO("func=%s => fd=%d events=%d index=%d\n", __FUNCTION__, channel->fd(), channel->events(), index);
 
     if(index == kNew || index == kDeleted)
     {
@@ -120,10 +120,10 @@ void EpollPoller::update(int operation, Channel *channel)
 {
     epoll_event event;
     memset(&event,0,sizeof event);
-    event.events = channel->events();
-    event.data.ptr = channel;
     int fd = channel->fd();
+    event.events = channel->events();
     event.data.fd = fd;
+    event.data.ptr = channel;
 
     if(epoll_ctl(epollfd_,operation,fd,&event) < 0)
     {

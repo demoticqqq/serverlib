@@ -19,8 +19,8 @@ public:
 
     enum Option
     {
-        kNoReusePort;
-        kReusePort;
+        kNoReusePort,
+        kReusePort
     };
     TcpServer(EventLoop* loop,
               const InetAddress& listenAddr,
@@ -33,7 +33,7 @@ public:
     EventLoop* getLoop() const {return loop_;}
     std::shared_ptr<EventLoopThreadPool> threadPool() {return threadPool_;}
 
-    void setTreadNum(int numThread);
+    void setThreadNum(int numThread);
     void setThreadInitCallback(const ThreadInitCallback& cb) {threadInitCallback_ = cb;}
 
     void start();

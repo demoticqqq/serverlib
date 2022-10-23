@@ -30,6 +30,7 @@ Thread::Thread(Thread::ThreadFunc func, const std::string &name)
     ,tid_(0)
     ,func_(std::move(func))
     ,name_(name)
+    ,latch_(1)
 {
     setDefaultName();
 }
@@ -46,13 +47,12 @@ void Thread::start()
 {
     assert(!started_);
     started_ = true;
-    CountDownLatch* latch_;
     thread_=std::shared_ptr<std::thread>(new std::thread([&](){
         tid_=CurrentThread::tid();
-        latch_->countDown();
+        latch_.countDown();
         func_();
     }));
-    latch_->wait();
+    latch_.wait();
     assert(tid_>0);
 }
 
