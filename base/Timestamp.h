@@ -5,7 +5,7 @@
 #ifndef SERVERLIB_TIMESTAMP_H
 #define SERVERLIB_TIMESTAMP_H
 #include <string>
-
+#include "Logger.h"
 class Timestamp
 {
 public:
@@ -22,6 +22,8 @@ public:
     static  Timestamp now();
     std::string toString() const;
 
+    bool valid() const { return microSecondsSinceEpoch_ > 0; }
+
     int64_t microSecondsSinceEpoch() const {return microSecondsSinceEpoch_;}
 
     static const int kMicroSecondsPerSecond = 1000*1000;
@@ -29,6 +31,17 @@ public:
 private:
     int64_t microSecondsSinceEpoch_;
 };
+
+inline bool operator<(Timestamp lhs, Timestamp rhs)
+{
+    return lhs.microSecondsSinceEpoch() < rhs.microSecondsSinceEpoch();
+}
+
+inline bool operator==(Timestamp lhs, Timestamp rhs)
+{
+    return lhs.microSecondsSinceEpoch() == rhs.microSecondsSinceEpoch();
+}
+
 
 inline double timeDifference(Timestamp high,Timestamp low)
 {

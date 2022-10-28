@@ -91,6 +91,13 @@ public:
     ssize_t readFd(int fd,int *saveErrno);
     ssize_t writeFd(int fd,int *saveErrno);
 
+    void prepend(const void* /*restrict*/ data, size_t len)
+    {
+        readerIndex_ -= len;
+        const char* d = static_cast<const char*>(data);
+        std::copy(d, d+len, begin()+readerIndex_);
+    }
+
 private:
     char *begin() {return buffer_.data();}
     const char *begin() const {return buffer_.data();}

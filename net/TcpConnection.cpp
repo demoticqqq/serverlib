@@ -50,15 +50,20 @@ TcpConnection::~TcpConnection()
 
 void TcpConnection::send(const std::string &buf)
 {
+    send(buf.data(),buf.size());
+}
+
+void TcpConnection::send(const void *data, int len)
+{
     if(state_ == kConnected)
     {
         if(loop_->isInLoopThread())  // 这种对于单个reactor的情况 用户调用conn->send时 loop_即为当前线程
         {
-            sendInLoop(buf.data(),buf.size());
+            sendInLoop(data,len);
         }
         else    //多reactor情况
         {
-            loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, buf.data(),buf.size()));
+            loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, data,len));
         }
     }
 }

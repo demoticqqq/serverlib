@@ -122,7 +122,7 @@ void EpollPoller::update(int operation, Channel *channel)
     memset(&event,0,sizeof event);
     int fd = channel->fd();
     event.events = channel->events();
-    event.data.fd = fd;
+    //event.data.fd = fd;
     event.data.ptr = channel;
 
     if(epoll_ctl(epollfd_,operation,fd,&event) < 0)

@@ -50,9 +50,14 @@ public:
     EventLoop *ownerLoop() {return loop_;}
     void remove();
 
+    std::string reventsToString() const;
+    std::string eventsToString() const;
+
 private:
     void update();
     void handleEventWithGuard(Timestamp receiveTime);
+
+    static std::string eventsToString(int fd, int ev);
 
     static const int kNoneEvent;
     static const int kReadEvent;

@@ -8,6 +8,7 @@
 #include <memory>
 #include <atomic>
 
+#include <boost/any.hpp>
 #include "../base/noncopyable.h"
 #include "../base/Logger.h"
 #include "InetAddress.h"
@@ -50,11 +51,18 @@ public:
     //销毁连接
     void connectDestroyed();
     //发送数据
+    void send(const void*data,int len);
     void send(const std::string &buf);
     //关闭连接（半关闭）
     void shutdown();
 
     void setTcpNoDelay(bool on);
+
+    void setContext(const boost::any& context)
+    { context_ = context; }
+
+    const boost::any& getContext() const
+    { return context_; }
 
 
 private:
@@ -96,6 +104,8 @@ private:
 
     Buffer inputBuffer_;
     Buffer outputBuffer_;
+
+    boost::any context_;
 
 };
 

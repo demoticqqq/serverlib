@@ -2,9 +2,11 @@
 // Created by huangw on 22-10-1.
 //
 #include <sys/eventfd.h>
+#include <signal.h>
 #include "EventLoop.h"
 #include "Channel.h"
 #include "Poller.h"
+#include "TimerQueue.h"
 #include "../base/Logger.h"
 
 __thread EventLoop* t_loopInThisThread = nullptr;
@@ -21,13 +23,26 @@ int createEventfd()
     return evfd;
 }
 
+/*SIGPIPE的默认行为是终止进程
+ * 当对方关闭连接，而本地仍在继续写入时，会触发该信号，导致程序退出
+ * 所以利用全局对象，直接忽略该信号*/
+class IgnoreSigPipe
+{
+public:
+    IgnoreSigPipe()
+    {
+        signal(SIGPIPE,SIG_IGN);
+    }
+};
+IgnoreSigPipe initobj;
+
 EventLoop::EventLoop()
     :looping_(false)
     ,quit_(false)
     ,threadId_(CurrentThread::tid())
     ,callingPendingFunctors_(false)
     ,poller_(Poller::newDefaultPoller(this))
-    //,timerQueue_()
+    ,timerQueue_(new TimerQueue(this))
     ,wakeupFd_(createEventfd())
     ,wakeupChannel_(new Channel(this,wakeupFd_))
 {
@@ -63,6 +78,7 @@ void EventLoop::loop()
     {
         activeChannels_.clear();
         pollReturnTime_ = poller_->poll(kPollerTimeoutMs,&activeChannels_);
+        //printActiveChannels();
         for(auto& channel:activeChannels_)
         {
             channel->handleEvent(pollReturnTime_);
@@ -126,6 +142,28 @@ void EventLoop::queueInLoop(EventLoop::Functor cb)
     }
 }
 
+TimerId EventLoop::runAt(Timestamp time, TimerCallback cb)
+{
+    return timerQueue_->addTimer(std::move(cb),time,0.0);
+}
+
+TimerId EventLoop::runAfter(double delay, TimerCallback cb)
+{
+    Timestamp time(addTime(Timestamp::now(),delay));
+    return runAt(time,std::move(cb));
+}
+
+TimerId EventLoop::runEvery(double interval, TimerCallback cb)
+{
+    Timestamp time(addTime(Timestamp::now(),interval));
+    return timerQueue_->addTimer(std::move(cb),time,interval);
+}
+
+void EventLoop::cancel(TimerId timerId)
+{
+    return timerQueue_->cancel(timerId);
+}
+
 size_t EventLoop::queueSize() const
 {
     std::unique_lock<std::mutex>lk(mutex_);
@@ -180,5 +218,13 @@ void EventLoop::doPendingFuncTors()
         functor();
     }
     callingPendingFunctors_ = false;
+}
+
+void EventLoop::printActiveChannels() const
+{
+    for (const Channel* channel : activeChannels_)
+    {
+        LOG_INFO("{%s}",channel->reventsToString().c_str());
+    }
 }
 

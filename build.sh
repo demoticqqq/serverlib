@@ -16,6 +16,10 @@ cd `pwd`/build &&
 cd ..
 
 # 把头文件拷贝到 /usr/include/serverlib       .so库拷贝到 /usr/lib
+if [ ! -d /usr/include/serverlib ]; then
+    mkdir /usr/include/serverlib
+fi
+
 if [ ! -d /usr/include/serverlib/base ]; then
     mkdir /usr/include/serverlib/base
 fi
