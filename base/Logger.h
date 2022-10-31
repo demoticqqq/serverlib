@@ -1,86 +1,106 @@
 //
-// Created by huangw on 22-10-1.
-//  临时简易日志类
+// Created by huangw on 22-10-29.
 //
 
 #ifndef SERVERLIB_LOGGER_H
 #define SERVERLIB_LOGGER_H
 
-
+#include <stdint.h>
 #include <string>
+#include <cstring>
+#include <functional>
 
-#include "noncopyable.h"
+#include "Log_buffer.h"
+#include "Timestamp.h"
 
-// LOG_INFO("%s %d", arg1, arg2)
-#define LOG_INFO(logmsgFormat, ...)                       \
-    do                                                    \
-    {                                                     \
-        Logger &logger = Logger::instance();              \
-        logger.setLogLevel(INFO);                         \
-        char buf[1024] = {0};                             \
-        snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__); \
-        logger.log(buf);                                  \
-    } while (0)
-
-#define LOG_ERROR(logmsgFormat, ...)                      \
-    do                                                    \
-    {                                                     \
-        Logger &logger = Logger::instance();              \
-        logger.setLogLevel(ERROR);                        \
-        char buf[1024] = {0};                             \
-        snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__); \
-        logger.log(buf);                                  \
-    } while (0)
-
-#define LOG_FATAL(logmsgFormat, ...)                      \
-    do                                                    \
-    {                                                     \
-        Logger &logger = Logger::instance();              \
-        logger.setLogLevel(FATAL);                        \
-        char buf[1024] = {0};                             \
-        snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__); \
-        logger.log(buf);                                  \
-        exit(-1);                                         \
-    } while (0)
-
-#ifdef MUDEBUG
-#define LOG_DEBUG(logmsgFormat, ...)                      \
-    do                                                    \
-    {                                                     \
-        Logger &logger = Logger::instance();              \
-        logger.setLogLevel(DEBUG);                        \
-        char buf[1024] = {0};                             \
-        snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__); \
-        logger.log(buf);                                  \
-    } while (0)
-#else
-#define LOG_DEBUG(logmsgFormat, ...)
-#endif
-
-// 定义日志的级别 INFO ERROR FATAL DEBUG
-enum LogLevel
-{
-    INFO,  // 普通信息
-    ERROR, // 错误信息
-    FATAL, // core dump信息
-    DEBUG, // 调试信息
-};
-
-// 输出一个日志类
-
-class Logger : noncopyable
+class Logger
 {
 public:
-    // 获取日志唯一的实例对象 单例
-    static Logger &instance();
-    // 设置日志级别
-    void setLogLevel(int level);
-    // 写日志
-    void log(std::string msg);
+    using Buffer = FixedBuffer<kSmallBuffer>;
+    enum LogLevel
+    {
+        TRACE = 0,
+        DEBUG,
+        INFO,
+        WARN,
+        ERROR,
+        FATAL,
+        NUM_LOG_LEVELS
+    };
+    class SourceFile
+    {
+    public:
+        template<int N>
+        SourceFile(const char (&arr)[N])
+            : data_(arr)
+            , size_(N-1)
+        {
+            const char* slash = strrchr(data_,'/');
+            if(slash)
+            {
+                data_ = slash + 1;
+                size_ -= static_cast<int>(data_ - arr);
+            }
+        }
+        explicit SourceFile(const char* filename)
+            :data_(filename)
+        {
+            const char* slash = strrchr(filename,'/');
+            if(slash)
+            {
+                data_ = slash + 1;
+            }
+            size_ = static_cast<int>(strlen(data_));
+        }
+        const char* data_;
+        int size_;
+    };
+    Logger(SourceFile file, int line);
+    Logger(SourceFile file, int line, LogLevel level);
+    Logger(SourceFile file, int line, LogLevel level, const char* func);
+    Logger(SourceFile file, int line, bool toAbort);
+    ~Logger();
+    void writeLog(const char* fmt,...);
+
+    static Logger::LogLevel logLevel();
+    static void setLogLevel(Logger::LogLevel level);
+
+    using OutputFunc = std::function<void(const char*, int)>;
+    using FlushFunc = std::function<void()>;
+
+    static void setOutput(OutputFunc);
+    static void setFlush(FlushFunc);
 
 private:
-    int logLevel_;
+    void formatTime();
+    void finish();
+
+    std::string logResult;
+    Timestamp time_;
+    Logger::LogLevel level_;
+    int line_;
+    SourceFile basename_;
 };
 
+extern Logger::LogLevel g_logLevel;
+
+inline Logger::LogLevel Logger::logLevel()
+{
+    return g_logLevel;
+}
+
+#define LOG_TRACE(fmt,args...) if (Logger::logLevel() <= Logger::TRACE) \
+    Logger(__FILE__, __LINE__, Logger::TRACE, __FUNCTION__).writeLog(fmt,##args)
+#define LOG_DEBUG(fmt,args...) if (Logger::logLevel() <= Logger::DEBUG) \
+    Logger(__FILE__, __LINE__, Logger::DEBUG, __FUNCTION__).writeLog(fmt,##args)
+#define LOG_INFO(fmt,args...) if (Logger::logLevel() <= Logger::INFO) \
+    Logger(__FILE__, __LINE__).writeLog(fmt,##args)
+#define LOG_WARN(fmt,args...) Logger(__FILE__, __LINE__, Logger::WARN).writeLog(fmt,##args)
+#define LOG_ERROR(fmt,args...) Logger(__FILE__, __LINE__, Logger::ERROR).writeLog(fmt,##args)
+#define LOG_FATAL(fmt,args...) Logger(__FILE__, __LINE__, Logger::FATAL).writeLog(fmt,##args)
+#define LOG_SYSERR(fmt,args...) ogger(__FILE__, __LINE__, false).writeLog(fmt,##args)
+#define LOG_SYSFATAL(fmt,args...) Logger(__FILE__, __LINE__, true).writeLog(fmt,##args)
+
+;
 
 #endif //SERVERLIB_LOGGER_H

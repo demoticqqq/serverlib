@@ -5,7 +5,6 @@
 #ifndef SERVERLIB_TIMESTAMP_H
 #define SERVERLIB_TIMESTAMP_H
 #include <string>
-#include "Logger.h"
 class Timestamp
 {
 public:

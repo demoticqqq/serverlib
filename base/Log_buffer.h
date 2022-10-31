@@ -1,0 +1,59 @@
+//
+// Created by huangw on 22-10-29.
+//
+
+#ifndef SERVERLIB_LOG_BUFFER_H
+#define SERVERLIB_LOG_BUFFER_H
+
+#include "noncopyable.h"
+#include <string>
+#include <string.h>
+
+const int kSmallBuffer = 4000;
+const int kLargeBuffer = 4000 * 1000;
+
+template<int SIZE>
+class FixedBuffer : noncopyable
+{
+public:
+    FixedBuffer()
+        : cur_(data_)
+    {
+    }
+    ~FixedBuffer()
+    {
+    }
+
+    void append(const char* buf,size_t len)
+    {
+        if(static_cast<size_t>(avail()) > len)
+        {
+            memcpy(cur_,buf,len);
+            cur_ += len;
+        }
+    }
+
+
+
+    const char* data() {return data_;}
+    int length() const {return static_cast<int>(cur_ - data_);}
+    void add(size_t len) {cur_ += len;}
+
+    void reset() {cur_ = data_;}
+    void bZero() { bzero(data_,sizeof data_);}
+
+    const char* debugString(); //添加’\0‘，组成字符串
+    std::string toString() const {return std::string (data_,length());}
+
+    char* currrent() {return cur_;}
+    int avail() const {return static_cast<int>(end() - cur_);}
+
+
+private:
+    const char* end() const {return data_ + sizeof data_;}
+    char data_[SIZE];
+    char* cur_;
+};
+
+
+#endif //SERVERLIB_LOG_BUFFER_H

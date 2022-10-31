@@ -10,7 +10,6 @@
 
 #include <boost/any.hpp>
 #include "../base/noncopyable.h"
-#include "../base/Logger.h"
 #include "InetAddress.h"
 #include "Callback.h"
 #include "Buffer.h"

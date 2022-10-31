@@ -2,7 +2,7 @@
 // Created by huangw on 22-10-1.
 //
 #include <string.h>
-
+#include <stdio.h>
 #include "EpollPoller.h"
 #include "../base/Logger.h"
 #include "Channel.h"
@@ -70,8 +70,8 @@ void EpollPoller::fillActiveChannels(int numEvents, Poller::ChannelList *activeC
 
 void EpollPoller::updateChannel(Channel *channel)
 {
-    const int index = channel->index();
-    LOG_INFO("func=%s => fd=%d events=%d index=%d\n", __FUNCTION__, channel->fd(), channel->events(), index);
+    int index = channel->index();
+    LOG_INFO("func=%s => fd=%ld events=%ld index=%d\n", __FUNCTION__, channel->fd(), channel->events(), index);
 
     if(index == kNew || index == kDeleted)
     {
